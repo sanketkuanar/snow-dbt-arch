@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: sales_claims
+    database: RAW_SALES_CLAIMS
+    schema: PUBLIC
+    tables:
+      - name: LAAD_TB
+      - name: PROD_XREF
+      - name: XPT_TB
+
+  - name: payer
+    database: RAW_PAYER
+    schema: PUBLIC
+    tables:
+      - name: MAJORITY_STATUS_TB
+      - name: PAYER_HIER_TB
