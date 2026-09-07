@@ -33,7 +33,7 @@ sales_agg as (
         c.cal_month,
         sum(s.nrx)                as nrx,
         sum(s.trx)                as trx,
-        sum(s.trx) / 25.0         as fct_trx,     -- pill factor: TRx / 25
+        sum(s.trx) / 10.0         as fct_trx,     -- pill factor: TRx / 10
         sum(s.tqty)               as tqty
     from sales s
     join prod  p   on s.prod_sk  = p.prod_sk
