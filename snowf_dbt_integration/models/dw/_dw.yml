@@ -1,0 +1,66 @@
+version: 2
+
+models:
+  - name: calendar_dim
+    description: "Date dimension generated dynamically via date_spine."
+    columns:
+      - name: cal_sk
+        tests: [not_null, unique]
+      - name: cal_dt
+        tests: [not_null, unique]
+
+  - name: product_dim
+    description: "Product dimension with generated sequential prod_sk."
+    columns:
+      - name: prod_sk
+        tests: [not_null, unique]
+      - name: prod_sk_nat
+        tests: [not_null, unique]
+      - name: brand_nm
+        tests: [not_null]
+
+  - name: payer_plan_xref
+    description: "Payer dimension / cross-reference with generated payer_sk."
+    columns:
+      - name: payer_sk
+        tests: [not_null, unique]
+      - name: payer_entity_id
+        tests: [not_null, unique]
+
+  - name: laad_fct
+    description: "Claim-level fact; carries prod_sk, payer_sk, cal_sk."
+    columns:
+      - name: claim_id
+        tests: [not_null, unique]
+      - name: prod_sk
+        tests:
+          - relationships: {to: ref('product_dim'), field: prod_sk}
+      - name: payer_sk
+        tests:
+          - relationships: {to: ref('payer_plan_xref'), field: payer_sk}
+      - name: cal_sk
+        tests:
+          - relationships: {to: ref('calendar_dim'), field: cal_sk}
+
+  - name: xpt_fct
+    description: "Sales (XPT) fact; carries prod_sk, payer_sk, cal_sk plus measures."
+    columns:
+      - name: prod_sk
+        tests:
+          - relationships: {to: ref('product_dim'), field: prod_sk}
+      - name: payer_sk
+        tests:
+          - relationships: {to: ref('payer_plan_xref'), field: payer_sk}
+      - name: cal_sk
+        tests:
+          - relationships: {to: ref('calendar_dim'), field: cal_sk}
+
+  - name: payer_stat_rpt
+    description: "Formulary / payer status report fact; carries payer_sk and prod_sk."
+    columns:
+      - name: payer_sk
+        tests:
+          - relationships: {to: ref('payer_plan_xref'), field: payer_sk}
+      - name: prod_sk
+        tests:
+          - relationships: {to: ref('product_dim'), field: prod_sk}
