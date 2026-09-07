@@ -1,0 +1,27 @@
+{{
+  config(
+    materialized='incremental',
+    incremental_strategy='delete+insert',
+    unique_key='SVC_DT',
+    schema='CLAIMS'
+  )
+}}
+
+SELECT
+CLAIM_ID,
+PATIENT_ID,
+PRODUCT_ID AS PROD_SK,
+PAYER_PLAN_ID AS PAYER_ENTITY_ID,
+SVC_DT,
+CLAIM_TYPE,
+CLAIM_STATUS,
+DAYS_SUPPLY,
+QUANTITY,
+REJECT_CODE,
+OPC_ASK,
+OPC_PAID,
+SOB,
+(CASE WHEN LIFE_CYCLE_CLAIMS_YN = 'TRUE' THEN 'Y' WHEN LIFE_CYCLE_CLAIMS_YN = 'FALSE' THEN 'N' END) AS LIFE_CYCLE_CLAIMS_YN,
+ZIP_CODE,
+CURRENT_TIMESTAMP() AS LOAD_DATE
+FROM {{ source('sales_claims', 'LAAD_TB') }}
